@@ -85,7 +85,7 @@
 		<delete file="../JavaFrontParser/trans/JavaFrontParserMain.rtree" />
 		<delete file="../JavaFrontParser/trans/JavaFrontParserMain.dep" />
 		<delete dir="../JavaFrontParser/trans/JavaFrontParserMain" />
-		<java failonerror="true" dir="../JavaFrontParser/trans/" jar="../JavaFrontParser/utils/strategoxt.jar" fork="true">
+		<java failonerror="true" dir="../JavaFrontParser/trans/" jar="./lib/strategoxt.jar" fork="true">
 			<arg line="-i starter.str -o JavaFrontParserMain -la stratego-sglr --lib -I .. -p org.kframework.main.lib --clean" />
 		</java>
 		<delete dir="src/org/kframework/main/lib" />
@@ -135,6 +135,8 @@
 	          strategoxt.jar" />
 			</manifest>
 			<fileset dir="./bin" />
+			<zipgroupfileset dir="./lib" includes="strategoxt.jar" />
+			<zipgroupfileset dir="./lib" includes="aterm-java.jar" />
 		</jar>
 	</target>
 
