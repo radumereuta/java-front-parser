@@ -1,0 +1,33 @@
+%%%
+ %% Section 8.9: Enums
+ %%
+ %% @author  Martin Bravenboer <martin.bravenboer@gmail.com>
+ %%%
+module languages/java-15/classes/EnumDeclarations
+imports
+  languages/java-15/lexical/Identifiers
+  languages/java-15/classes/ClassDeclarations
+
+exports
+  sorts
+    EnumDec
+    EnumDecHead
+    EnumBody
+    EnumConst
+    EnumConstArgs
+    EnumBodyDecs
+
+  context-free syntax
+    EnumDecHead EnumBody -> EnumDec {cons("EnumDec")}
+
+    AnnoClassModList "enum" Id Interfaces? -> EnumDecHead {cons("EnumDecHead")}
+
+    "{" EnumConstList     EnumBodyDecs? "}" -> EnumBody {cons("EnumBody")}
+    "{" EnumConstList "," EnumBodyDecs? "}" -> EnumBody {cons("EnumBody")}
+    {EnumConst ","}* -> EnumConstList {cons("EnumConstList")}
+
+    Id EnumConstArgs? ClassBody?  -> EnumConst {cons("EnumConst")}
+    "(" ExprList ")"  -> EnumConstArgs {bracket}
+
+    ";" ClassBodyDecList -> EnumBodyDecs {cons("EnumBodyDecs")}
+	ClassBodyDec* -> ClassBodyDecList {cons("ClassBodyDecList")}

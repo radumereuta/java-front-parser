@@ -1,0 +1,39 @@
+%%%
+ %% Section 8.8: Constructor Declarations
+ %%
+ %% @author  Martin Bravenboer <martin.bravenboer@gmail.com>
+ %%%
+module languages/java-15/classes/ConstructorDeclarations
+imports
+  languages/java-15/lexical/Identifiers
+  languages/java-15/lexical/Modifiers
+  languages/java-15/interfaces/Annotations
+  languages/java-15/statements/Main
+  languages/java-15/expressions/Main
+
+exports
+  sorts
+    ConstrDec
+    ConstrBody
+    ConstrHead
+    ConstrInv
+
+  context-free syntax
+    ConstrHead ConstrBody ->  ConstrDec {cons("ConstrDec")}
+    AnnoConstrModList TypeParams? Id "(" FormalParamList ")" Throws? -> ConstrHead {cons("ConstrDecHead")}
+    
+    (Anno | ConstrMod)* -> AnnoConstrModList {cons("AnnoConstrModList")}
+    
+	{FormalParam ","}* -> FormalParamList {cons("FormalParamList")}
+
+    "{" ConstrInv? BlockStmList "}" -> ConstrBody {cons("ConstrBody")}
+
+             TypeArgs? "this"  "(" ExprList ")" ";" -> ConstrInv {cons("AltConstrInv")}
+             TypeArgs? "super" "(" ExprList ")" ";" -> ConstrInv {cons("SuperConstrInv")}
+    Expr "." TypeArgs? "super" "(" ExprList ")" ";" -> ConstrInv {cons("QSuperConstrInv")}
+
+  sorts ConstrMod
+  context-free syntax  
+    Public    -> ConstrMod
+    Protected -> ConstrMod
+    Private   -> ConstrMod

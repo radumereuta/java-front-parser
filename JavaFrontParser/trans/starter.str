@@ -1,0 +1,141 @@
+module starter
+
+imports
+  libstratego-sglr
+  libstratego-lib
+  libstratego-gpp
+  libstratego-aterm
+  include/JavaFrontParser
+
+rules
+
+	// compile like this:
+	// lang -jar strategoxt.jar -i starter.str -o Ocl -la stratego-sglr --lib -I .. -p oclParser.lib --clean
+
+ 	langParse = ?[a, b] ; <parse-string(my-parse-error|<import-term(include/JavaFrontParser.tbl)>)> b ; (handleErrors <+ parsedJustFine2)
+
+ 	my-parse-error = id//debug(!"ParseError: ")
+ 	handleErrors =
+		(?error(_,_) ; (to-xml-error <+ debug(!"Error: This should not happen. Please report.")))
+
+	xmlStringEscapeToString = string-replace(|"&", "&amp;") ; string-replace(|">", "&gt;") ; string-replace(|"<", "&lt;") ; string-replace(|"\\\"", "&quot;")
+	to-xml-error:
+		error(a, b*) -> $[<?xml version="1.0" encoding="UTF-8" ?>
+		<T>
+			<error value="[<xmlStringEscapeToString>a]">
+				[b']
+			</error>
+		</T>
+		]
+		where b' := <all(to-xml-error)> b*
+
+	to-xml-error:
+		localized(a, b) ->
+			$[<localized message="[<xmlStringEscapeToString>a]" filename="[<xmlStringEscapeToString>x]" loc="[loc]" />
+			]
+		where (!b => (x, area(y1, y2, y3, y4, y5, y6))) <+ (!b => area-in-file(x, area(y1, y2, y3, y4, y5, y6)))
+		where loc := <write-to-string> (y1, y2, y3, y4)
+
+
+
+	my-open-error = id //debug(!"OpenError: ")
+	my-parse-error = id //debug(!"ParseError: ")
+	parsedJustFine:
+		x -> $[<?xml version="1.0" encoding="UTF-8" ?>
+			<T>
+				[<to-xml> x]
+			</T>]
+
+	getLocAsString        = (prim("SSL_EXT_origin_location", <id>) ; write-to-string) <+ !"(0,0,0,0)"
+
+	to-xml:
+		a#(b) -> $[<term cons="[a]" loc="[loc]">
+					[<all(to-xml)> b]
+			</term>
+		]
+		where not(<string-starts-with(|"\"")> a)
+		where not(!a => [])
+		where loc := <getLocAsString>
+		//where <debug(!"Term1: ")> (a, b)
+
+	to-xml:
+		x#(b) -> $[<terminal value=[x] loc="[loc]"/>
+		]
+		where <string-starts-with(|"\"")> x
+		where loc := <getLocAsString>
+		//where debug(!"Term2: ")
+
+	to-xml:
+		x -> $[<list loc="[loc]">
+				[<all(to-xml)> x]
+		</list>
+		]
+		where loc := <getLocAsString>
+		//where debug(!"Term3: ")
+
+
+// -------------------------------------------------------------
+
+
+	parsedJustFine2:
+		x -> $[[rez]]
+		where rez := <to-kast> x
+
+	to-kast:
+		x -> $[# "[<escape> x]"(.KList)]
+		where <is-string> x
+
+	to-kast:
+		x -> $[# [x](.KList)]
+		where <is-int> x
+
+	to-kast:
+		a#(b) -> $['[a](
+				     [<to-kast-list> b]
+				   ) ]
+		where not(<string-starts-with(|"\"")> a)
+		where not(!a => [])
+		//where <debug(!"Term1: ")> (a, b)
+
+	to-kast:
+		a#(b) -> $[[<to-kast-list> b]]
+		//where debug(!"MyList: ")
+		//where not(!a => [])
+		//where debug(!"Term3: ")
+
+
+	to-kast-list:
+		[hd | tl] -> $[[<to-kast> hd],,
+		               [[<to-kast-list> tl]]]
+		where not(!tl => [])
+
+	to-kast-list:
+		[hd | tl] -> $[[<to-kast> hd]]
+		where !tl => []
+
+	to-kast-list:
+		[] -> $[.KList]
+		
+		
+
+
+	// lang -jar strategoxt.jar -i starter.str -o Ocl -la stratego-sglr --lib -I .. -p oclParser.lib --clean
+	// lang -jar strategoxt.jar -i starter.str -o langParser -la stratego-sglr -I .. -m safecallcmd1 -p ro.uaic.info.fmse.parser
+
+	safecallcmd1 = ?[a, b] ; <parse-file(my-open-error, my-parse-error|<import-term(include/JavaFrontParser.tbl)>)> b ; to-kast
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

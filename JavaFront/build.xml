@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="JavaFront" default="build">
+	<target name="build" depends="signature, stratego2java, javac, jar" />
+
+	<target name="clean">
+		<delete dir="src/org/kframework/main/lib" />
+		<delete file="../JavaFrontParser/trans/JavaFrontParserMain.rtree" />
+		<delete file="../JavaFrontParser/trans/JavaFrontParserMain.dep" />
+		<delete dir="../JavaFrontParser/trans/JavaFrontParserMain" />
+		<delete dir="../JavaFrontParser/include" />
+		<delete dir="bin" />
+	</target>
+
+	<!-- stage 1 - Generate signature and table -->
+
+	<target name="signature">
+		<dependset>
+			<srcfileset file="../JavaFrontParser/syntax/*.sdf" />
+			<srcfileset file="../JavaFrontParser/trans/*.str" />
+			<targetfileset file="../JavaFrontParser/include/*.tbl" />
+			<targetfileset file="../JavaFrontParser/include/*.str" />
+		</dependset>
+		<available file="../JavaFrontParser/include/JavaFrontParser.tbl" property="signature.available" />
+		<antcall target="signature.helper" />
+	</target>
+	<target name="signature.helper" unless="signature.available">
+		<!-- pack the definition into a single .def file -->
+		<mkdir dir="../JavaFrontParser/include" />
+		<java jar="./lib/strj.jar" fork="true" failonerror="true">
+			<arg value="org.strategoxt.tools.main-pack-sdf" />
+			<arg value="-i" />
+			<arg value="../JavaFrontParser/syntax/JavaFrontParser.sdf" />
+			<arg value="-o" />
+			<arg value="../JavaFrontParser/include/JavaFrontParser.def" />
+		</java>
+		<echo>Packed to .def</echo>
+		<!-- create the rtg file -->
+		<java jar="./lib/strj.jar" fork="true" failonerror="true">
+			<arg value="org.strategoxt.tools.main-sdf2rtg" />
+			<arg value="-i" />
+			<arg value="../JavaFrontParser/include/JavaFrontParser.def" />
+			<arg value="-o" />
+			<arg value="../JavaFrontParser/include/JavaFrontParser.rtg" />
+			<arg value="--ignore-missing-cons" />
+			<arg value="-Xnativepath" />
+			<arg value="${dot}/lib/native/${osNativesDir}/" />
+			<arg value="-m" />
+			<arg value="JavaFrontParser" />
+		</java>
+		<echo>Def -> Rtg</echo>
+		<!-- create the .str file representing the signature -->
+		<java jar="./lib/strj.jar" fork="true" failonerror="true">
+			<arg value="org.strategoxt.tools.main-rtg2sig" />
+			<arg value="-i" />
+			<arg value="../JavaFrontParser/include/JavaFrontParser.rtg" />
+			<arg value="-o" />
+			<arg value="../JavaFrontParser/include/JavaFrontParser.str" />
+			<arg value="--module" />
+			<arg value="JavaFrontParser" />
+		</java>
+		<!-- create the .tbl file of the definition -->
+		<echo message="Build TBL" />
+		<exec executable="${dot}/lib/native/${osNativesDir}/sdf2table">
+			<arg value="-i" />
+			<arg value="../JavaFrontParser/include/JavaFrontParser.def" />
+			<arg value="-o" />
+			<arg value="../JavaFrontParser/include/JavaFrontParser.tbl" />
+			<arg value="-m" />
+			<arg value="JavaFrontParser" />
+		</exec>
+	</target>
+
+	<!-- stage 2 - Generate java files from stratego -->
+
+	<target name="stratego2java">
+		<dependset>
+			<srcfileset file="../JavaFrontParser/trans/starter.str" />
+			<srcfileset file="../JavaFrontParser/include/JavaFrontParser.str" />
+			<targetfileset dir="src/org/kframework/parser/concrete/lib" />
+		</dependset>
+		<available file="src/org/kframework/main/lib/JavaFrontParserMain.java" property="stratego2java.available" />
+		<antcall target="stratego2java.helper" />
+	</target>
+	<target name="stratego2java.helper" unless="stratego2java.available">
+		<delete file="../JavaFrontParser/trans/JavaFrontParserMain.rtree" />
+		<delete file="../JavaFrontParser/trans/JavaFrontParserMain.dep" />
+		<delete dir="../JavaFrontParser/trans/JavaFrontParserMain" />
+		<java failonerror="true" dir="../JavaFrontParser/trans/" jar="../JavaFrontParser/utils/strategoxt.jar" fork="true">
+			<arg line="-i starter.str -o JavaFrontParserMain -la stratego-sglr --lib -I .. -p org.kframework.main.lib --clean" />
+		</java>
+		<delete dir="src/org/kframework/main/lib" />
+		<copy todir="src/org/kframework/main/lib/">
+			<fileset dir="../JavaFrontParser/trans/JavaFrontParserMain">
+				<include name="*" />
+			</fileset>
+		</copy>
+
+		<delete file="../JavaFrontParser/trans/JavaFrontParserMain.rtree" />
+		<delete file="../JavaFrontParser/trans/JavaFrontParserMain.dep" />
+		<delete dir="../JavaFrontParser/trans/JavaFrontParserMain" />
+	</target>
+
+	<!-- stage 3 - Compile with javac -->
+
+	<path id="JavaFront.classpath">
+		<pathelement location="bin" />
+		<pathelement location="lib/strategoxt.jar" />
+		<pathelement location="lib/aterm-java.jar" />
+	</path>
+	<target name="javac">
+		<mkdir dir="bin" />
+		<copy includeemptydirs="false" todir="bin">
+			<fileset dir="src">
+				<exclude name="**/*.launch" />
+				<exclude name="**/*.java" />
+			</fileset>
+		</copy>
+		<echo message="${ant.project.name}: ${ant.file}" />
+		<javac debug="true" debuglevel="source,lines,vars" destdir="bin" includeantruntime="false" source="1.8" target="1.8">
+			<src path="src" />
+			<classpath refid="JavaFront.classpath" />
+		</javac>
+	</target>
+
+	<!-- stage 4 - Generate jar -->
+
+	<target name="jar">
+		<delete file="./bin/javafrontparser.jar" failonerror="false" />
+		<jar destfile="./bin/javafrontparser.jar" filesetmanifest="mergewithoutmain">
+			<manifest>
+				<attribute name="Main-Class" value="org.kframework.main.Main" />
+				<attribute name="Class-Path" value="
+	          .
+	          aterm-java.jar
+	          strategoxt.jar" />
+			</manifest>
+			<fileset dir="./bin" />
+		</jar>
+	</target>
+
+	<!-- OS helpers -->
+	<property location="." name="dot" />
+
+	<!-- set the native directory depending on the os -->
+	<condition property="osNativesDir" value="linux">
+		<and>
+			<os family="unix" />
+			<not>
+				<os family="mac" />
+			</not>
+		</and>
+	</condition>
+	<condition property="osNativesDir" value="macosx">
+		<os family="mac" />
+	</condition>
+	<condition property="osNativesDir" value="cygwin">
+		<os family="windows" />
+	</condition>
+</project>

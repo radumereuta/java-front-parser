@@ -1,0 +1,31 @@
+%%%
+ %% Section 15.10: Array Creation Expressions
+ %%
+ %% @author  Martin Bravenboer <martin.bravenboer@gmail.com>
+ %%%
+module languages/java-15/expressions/ArrayCreation
+imports
+  languages/java-15/expressions/Main
+
+exports
+  sorts
+    ArrayCreationExpr
+    ArrayBaseType
+    Dim
+    DimExpr
+
+  context-free syntax
+    ArrayCreationExpr     -> Expr
+
+    "new" ArrayBaseType DimExprList DimList  -> ArrayCreationExpr {cons("NewArray")}
+    "new" ArrayBaseType DimList ArrayInit -> ArrayCreationExpr {cons("NewArray")}
+    Dim* -> DimList {cons("DimList")}
+    DimExpr+ -> DimExprList {cons("DimExprList")}
+
+    PrimType -> ArrayBaseType
+    TypeName -> ArrayBaseType
+    TypeName "<" "?" ">" -> ArrayBaseType {cons("UnboundWld")}
+
+    "[" Expr "]" -> DimExpr {cons("Dim")}
+    "[" "]"      -> Dim     {cons("Dim")}
+

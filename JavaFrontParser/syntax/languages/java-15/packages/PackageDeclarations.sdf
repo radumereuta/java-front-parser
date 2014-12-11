@@ -1,0 +1,17 @@
+%%%
+ %% Section 7.4: Package Declarations
+ %%
+ %% @author Martin Bravenboer <martin.bravenboer@gmail.com>
+ %%%
+module languages/java-15/packages/PackageDeclarations
+imports
+  languages/java-15/names/Main
+  languages/java-15/interfaces/Annotations
+
+exports
+  sorts
+    PackageDec
+
+  context-free syntax
+    AnnoList "package" PackageName ";" -> PackageDec {cons("PackageDec")}
+    Anno* -> AnnoList {cons("AnnoList")}

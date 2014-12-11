@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension
+         point="org.eclipse.imp.runtime.languageDescription">
+      <language
+            extensions="jva"
+            description="JavaFrontParser"
+            language="JavaFrontParser"
+            derivedFrom="DynamicRoot"
+            validator="JavaFrontParser.JavaFrontParserValidator"
+            validatorClass="JavaFrontParser.JavaFrontParserValidator"
+      ></language>
+   </extension>
+   <extension
+         id="JavaFrontParser.parser"
+         name="JavaFrontParser Parser"
+         point="org.eclipse.imp.runtime.parser">
+      <parser
+            class="JavaFrontParser.JavaFrontParserParseController"
+            language="JavaFrontParser">
+      </parser>
+   </extension>    
+</plugin>

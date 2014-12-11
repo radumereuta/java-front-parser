@@ -1,0 +1,31 @@
+module JavaFrontParser.main
+
+imports
+  JavaFrontParser-Colorer
+  JavaFrontParser-Completions
+  JavaFrontParser-Folding
+  JavaFrontParser-Menus
+  JavaFrontParser-Refactorings
+  JavaFrontParser-References
+  JavaFrontParser-Syntax
+  JavaFrontParser-Views
+
+language General properties
+  
+  name:          JavaFrontParser
+  id:            JavaFrontParser
+  extends:       Root
+  
+  description:   "Spoofax-generated editor for the JavaFrontParser language"
+  url:           http://strategoxt.org
+  
+  extensions:    jva
+  table:         include/JavaFrontParser.tbl
+  start symbols: CompilationUnit
+  
+  provider:      include/javafrontparser.ctree
+  provider:      include/javafrontparser-java.jar
+  
+  observer:      editor-analyze (multifile)
+  
+  on save:       editor-save

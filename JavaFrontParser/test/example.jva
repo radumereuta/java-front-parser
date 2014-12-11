@@ -1,0 +1,12 @@
+package org.kframework.k;
+
+public class Main {
+	
+	public static void  Main() {
+		System.out.println("something in a string");
+		System.out.println("something else in a string");
+		if (true){System.out.println("something in if is a string");}
+		for (i=0;i<2;i++){System.out.println("something in for is a string");}
+	}
+	
+}

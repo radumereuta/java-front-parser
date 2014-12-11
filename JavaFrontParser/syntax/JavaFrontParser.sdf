@@ -1,0 +1,9 @@
+module JavaFrontParser
+
+imports
+  languages/java-15/Main
+
+exports
+  context-free start-symbols
+    CompilationUnit
+

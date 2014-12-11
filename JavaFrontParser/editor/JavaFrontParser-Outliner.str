@@ -1,0 +1,13 @@
+module editor/JavaFrontParser-Outliner
+
+imports
+  
+  include/JavaFrontParser
+  lib/runtime/editor/outline-library
+  lib/runtime/editor/origins
+  editor/JavaFrontParser-Outliner.generated
+
+rules
+  
+  to-outline-label = fail
+  

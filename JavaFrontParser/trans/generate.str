@@ -1,0 +1,25 @@
+module generate
+
+imports
+
+	include/JavaFrontParser
+	starter
+
+rules // Builder
+	
+	// Generates a Java program for selected AST.
+	generate-java:
+		(selected, position, ast, path, project-path) -> (filename, result)
+		with
+			filename := <guarantee-extension(|"kast")> path;
+			result	 := <to-kast> selected
+
+rules // Transformation to java strings.
+
+  to-kast:
+    [_] -> <concat-strings> <map(to-kast)>
+    
+  to-kast:
+    () -> ""
+
+ 

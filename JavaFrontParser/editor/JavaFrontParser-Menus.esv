@@ -1,0 +1,9 @@
+module JavaFrontParser-Menus
+
+menus
+  
+  menu: "Transform"                       (openeditor)
+    
+    action: "Show abstract syntax"   = debug-show-aterm (realtime) (meta) (source)
+    action: "Generate Kast"          = generate-java
+
