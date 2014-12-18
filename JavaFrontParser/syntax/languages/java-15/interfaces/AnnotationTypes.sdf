@@ -20,7 +20,7 @@ exports
 
   context-free syntax
     AnnoDecHead "{" AnnoElemDecList "}" -> AnnoDec {cons("AnnoDec")}
-    AnnoElemDec* -> AnnoElemDecList {cons("AnnoElemDec")}
+    AnnoElemDec* -> AnnoElemDecList {cons("AnnoElemDecList")}
     
     AnnoInterfaceModList "@" "interface" Id -> AnnoDecHead {cons("AnnoDecHead")}
 
