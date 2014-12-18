@@ -88,6 +88,10 @@ rules
 	to-kast:
 		x -> $[# [x](.KList)]
 		where <is-int> x
+		
+	to-kast:
+		a#(b) -> $[[<to-kast-userlist> a#(b)]]
+		where (!a => "SwitchLabelList")
 
 	to-kast:
 		a#(b) -> $['[a](
@@ -115,6 +119,19 @@ rules
 
 	to-kast-list:
 		[] -> $[.KList]
+		
+		
+
+	to-kast-userlist:
+		a#([hd | tl]) -> $['[a]([<to-kast> hd],,
+		               [[<to-kast-userlist> a#(tl)]])]
+	
+	
+
+
+	to-kast-userlist:
+		a#([]) -> $[.[a]]
+		
 		
 		
 
