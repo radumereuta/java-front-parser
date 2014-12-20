@@ -88,10 +88,32 @@ rules
 	to-kast:
 		x -> $[# [x](.KList)]
 		where <is-int> x
-		
+	
+	
+   // to-kast:
+   //  	IdList(b) -> $[ [<to-kast-idlist> b] ]	
+   // 
+   // 
+   // to-kast-idlist:
+   // 		[hd | tl] -> $['IdList([<to-kast> hd],, 
+   // 						[<to-kast-idlist> tl])]
+   // 						
+   // to-kast-idlist:
+   // 		[] -> $[.IdList]
+   		
+   		
 	to-kast:
-		a#(b) -> $[[<to-kast-userlist> a#(b)]]
-		where (!a => "SwitchLabelList")
+		a#(b) -> $[[<to-kast-userlist> (a,b)]]
+		where (!a => "IdList")
+		
+		
+	to-kast-userlist:
+		(a,[[hd | tl]]) -> $['[a]([<to-kast> hd],,
+		               		      [<to-kast-userlist> (a, [tl])])]
+		             
+	to-kast-userlist:
+		(a,[[]]) -> $[.[a]]
+		//where debug(!"to-kast-user-0: ")
 
 	to-kast:
 		a#(b) -> $['[a](
@@ -103,9 +125,6 @@ rules
 
 	to-kast:
 		a#(b) -> $[[<to-kast-list> b]]
-		//where debug(!"MyList: ")
-		//where not(!a => [])
-		//where debug(!"Term3: ")
 
 
 	to-kast-list:
@@ -122,15 +141,7 @@ rules
 		
 		
 
-	to-kast-userlist:
-		a#([hd | tl]) -> $['[a]([<to-kast> hd],,
-		               [[<to-kast-userlist> a#(tl)]])]
 	
-	
-
-
-	to-kast-userlist:
-		a#([]) -> $[.[a]]
 		
 		
 		
