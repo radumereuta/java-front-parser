@@ -90,22 +90,207 @@ rules
 		where <is-int> x
 	
 	
-   // to-kast:
-   //  	IdList(b) -> $[ [<to-kast-idlist> b] ]	
-   // 
-   // 
-   // to-kast-idlist:
-   // 		[hd | tl] -> $['IdList([<to-kast> hd],, 
-   // 						[<to-kast-idlist> tl])]
-   // 						
-   // to-kast-idlist:
-   // 		[] -> $[.IdList]
+   to-kast:
+    	ExprList(b) -> $[ [<to-kast-Exprlist> b] ]	
+   
+   
+   to-kast-Exprlist:
+   		[hd | tl] -> $['_,_([<to-kast> hd],, 
+   						[<to-kast-Exprlist> tl])]
+   						
+   to-kast-Exprlist:
+   		[] -> $[.Exps]
+   		
+   		
+   to-kast:
+    	DimExprList(b) -> $[ [<to-kast-DimExprlist> b] ]	
+   
+   
+   to-kast-DimExprlist:
+   		[hd | tl] -> $['__([<to-kast> hd],, 
+   						[<to-kast-DimExprlist> tl])]
+   						
+   to-kast-DimExprlist:
+   		[] -> $[.DimExps]
+   		
+   		
+   to-kast:
+    	DimList(b) -> $[ [<to-kast-Dimlist> b] ]	
+   
+   
+   to-kast-Dimlist:
+   		[hd | tl] -> $['__([<to-kast> hd],, 
+   						[<to-kast-Dimlist> tl])]
+   						
+   to-kast-Dimlist:
+   		[] -> $[.Dims]
+   		
+   		
+   to-kast:
+    	CatchClauseList(b) -> $[ [<to-kast-CatchClauseList> b] ]	
+   
+   
+   to-kast-CatchClauseList:
+   		[hd | tl] -> $['__([<to-kast> hd],, 
+   						[<to-kast-CatchClauseList> tl])]
+   						
+   to-kast-CatchClauseList:
+   		[] -> $[.CatchClauses]
+   		
+   		
+   to-kast:
+    	FormalParamList(b) -> $[ [<to-kast-paramlist> b] ]	
+   
+   
+   to-kast-paramlist:
+   		[hd | tl] -> $['_,_([<to-kast> hd],, 
+   						[<to-kast-paramlist> tl])]
+   						
+   to-kast-paramlist:
+   		[] -> $[.Params]
+   		
+   		
+   		
+   to-kast:
+    	VarInitList(b) -> $[ [<to-kast-VarInitlist> b] ]	
+   
+   
+   to-kast-VarInitlist:
+   		[hd | tl] -> $['_,_([<to-kast> hd],, 
+   						[<to-kast-VarInitlist> tl])]
+   						
+   to-kast-VarInitlist:
+   		[] -> $[.VarInits]
    		
    		
 	to-kast:
 		a#(b) -> $[[<to-kast-userlist> (a,b)]]
 		where (!a => "IdList")
 		
+	to-kast:
+		a#(b) -> $[[<to-kast-userlist> (a,b)]]
+		where (!a => "InterfaceTypeList")
+	
+	to-kast:
+		a#(b) -> $[[<to-kast-userlist> (a,b)]]
+		where (!a => "ExceptionList")
+		
+	to-kast:
+		a#(b) -> $[[<to-kast-userlist> (a,b)]]
+		where (!a => "TypeDecList")
+		
+	to-kast:
+		a#(b) -> $[[<to-kast-userlist> (a,b)]]
+		where (!a => "VarDecList")
+		
+	to-kast:
+		a#(b) -> $[[<to-kast-userlist> (a,b)]]
+		where (!a => "ImportDecList")
+		
+	to-kast:
+		a#(b) -> $[[<to-kast-userlist> (a,b)]]
+		where (!a => "ActualTypeArgList")
+		
+	to-kast:
+		a#(b) -> $[[<to-kast-userlist> (a,b)]]
+		where (!a => "ClassOrInterfaceTypeList")
+		
+	to-kast:
+		a#(b) -> $[[<to-kast-userlist> (a,b)]]
+		where (!a => "TypeParamList")
+		
+	to-kast:
+		a#(b) -> $[[<to-kast-userlist> (a,b)]]
+		where (!a => "AbstractMethodModList") 
+		
+	to-kast:
+		a#(b) -> $[[<to-kast-userlist> (a,b)]]
+		where (!a => "AnnoAbstractMethodModList")
+		
+	to-kast:
+		a#(b) -> $[[<to-kast-userlist> (a,b)]]
+		where (!a => "AnnoMethodModList")  
+		
+	to-kast:
+		a#(b) -> $[[<to-kast-userlist> (a,b)]]
+		where (!a => "AnnoVarModList")
+	
+	to-kast:
+		a#(b) -> $[[<to-kast-userlist> (a,b)]]
+		where (!a => "AnnoClassModList")
+		
+	to-kast:
+		a#(b) -> $[[<to-kast-userlist> (a,b)]]
+		where (!a => "AnnoConstantModList")
+		
+	to-kast:
+		a#(b) -> $[[<to-kast-userlist> (a,b)]]
+		where (!a => "AnnoConstrModList")
+	
+	to-kast:
+		a#(b) -> $[[<to-kast-userlist> (a,b)]]
+		where (!a => "AnnoFieldModList")
+		
+	to-kast:
+		a#(b) -> $[[<to-kast-userlist> (a,b)]]
+		where (!a => "AnnoInterfaceModList")
+		
+	to-kast:
+		a#(b) -> $[[<to-kast-userlist> (a,b)]]
+		where (!a => "AnnoList") 
+		
+	to-kast:
+		a#(b) -> $[[<to-kast-userlist> (a,b)]]
+		where (!a => "AnnoElemDecList")
+		
+	to-kast:
+		a#(b) -> $[[<to-kast-userlist> (a,b)]]
+		where (!a => "InterfaceMemberDecList") 
+		
+	to-kast:
+		a#(b) -> $[[<to-kast-userlist> (a,b)]]
+		where (!a => "ElemValPairList") 
+		
+	to-kast:
+		a#(b) -> $[[<to-kast-userlist> (a,b)]]
+		where (!a => "ElemValList") 
+		
+	to-kast:
+		a#(b) -> $[[<to-kast-userlist> (a,b)]]
+		where (!a => "EnumConstList") 	
+		
+	to-kast:
+		a#(b) -> $[[<to-kast-userlist> (a,b)]]
+		where (!a => "StringPartList")
+		
+	to-kast:
+		a#(b) -> $[[<to-kast-userlist> (a,b)]]
+		where (!a => "ClassBodyDecList") 
+		
+	to-kast:
+		a#(b) -> $[[<to-kast-userlist> (a,b)]]
+		where (!a => "BlockStmList") 
+		
+	to-kast:
+		a#(b) -> $[[<to-kast-userlist> (a,b)]]
+		where (!a => "SwitchGroupList") 
+		
+	to-kast:
+		a#(b) -> $[[<to-kast-userlist> (a,b)]]
+		where (!a => "SwitchLabelList") 
+		
+	to-kast:
+		a#(b) -> $[[<to-kast-userlist> (a,b)]]
+		where (!a => "VarInitList") 
+		
+	to-kast:
+		a#(b) -> $[[<to-kast-userlist> (a,b)]]
+		where (!a => "FormalParamList") 
+		
+	to-kast:
+		a#(b) -> $[[<to-kast-userlist> (a,b)]]
+		where (!a => "CatchClauseList") 
+
 		
 	to-kast-userlist:
 		(a,[[hd | tl]]) -> $['[a]([<to-kast> hd],,

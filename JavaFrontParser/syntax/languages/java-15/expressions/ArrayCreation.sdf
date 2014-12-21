@@ -18,7 +18,8 @@ exports
     ArrayCreationExpr     -> Expr
 
     "new" ArrayBaseType DimExprList DimList  -> ArrayCreationExpr {cons("NewArray")}
-    "new" ArrayBaseType DimList ArrayInit -> ArrayCreationExpr {cons("NewArray")}
+    "new" ArrayBaseType DimPlusList ArrayInit -> ArrayCreationExpr {cons("NewArray")}
+    Dim+ -> DimPlusList {cons("DimList")}
     Dim* -> DimList {cons("DimList")}
     DimExpr+ -> DimExprList {cons("DimExprList")}
 
