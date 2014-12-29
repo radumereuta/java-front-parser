@@ -91,96 +91,64 @@ rules
 	
 	
    to-kast:
-    	ExprList(b) -> $[ [<to-kast-Exprlist> b] ]	
+    	ExprList(b) -> $[ [<to-kast-commalist> b]]	
    
    
-   to-kast-Exprlist:
-   		[hd | tl] -> $['_,_([<to-kast> hd],, 
-   						[<to-kast-Exprlist> tl])]
+   to-kast-commalist:
+   		[hd | tl] -> $['_`,_([<to-kast> hd],, 
+   						[<to-kast-commalist> tl])]
    						
-   to-kast-Exprlist:
-   		[] -> $[.Exps]
+   to-kast-commalist:
+   		[] -> $['.List`{"`,"`}(.KList)]
    		
    		
    to-kast:
-    	DimExprList(b) -> $[ [<to-kast-DimExprlist> b] ]	
+    	DimExprList(b) -> $[ [<to-kast-tablist> b] ]	
    
    
-   to-kast-DimExprlist:
+   to-kast-tablist:
    		[hd | tl] -> $['__([<to-kast> hd],, 
-   						[<to-kast-DimExprlist> tl])]
+   						[<to-kast-tablist> tl])]
    						
-   to-kast-DimExprlist:
-   		[] -> $[.DimExps]
-   		
-   		
-   to-kast:
-    	DimList(b) -> $[ [<to-kast-Dimlist> b] ]	
-   
-   
-   to-kast-Dimlist:
-   		[hd | tl] -> $['__([<to-kast> hd],, 
-   						[<to-kast-Dimlist> tl])]
-   						
-   to-kast-Dimlist:
-   		[] -> $[.Dims]
-   		
-   		
-   to-kast:
-    	CatchClauseList(b) -> $[ [<to-kast-CatchClauseList> b] ]	
-   
-   
-   to-kast-CatchClauseList:
-   		[hd | tl] -> $['__([<to-kast> hd],, 
-   						[<to-kast-CatchClauseList> tl])]
-   						
-   to-kast-CatchClauseList:
-   		[] -> $[.CatchClauses]
-   		
-   		
-   to-kast:
-    	FormalParamList(b) -> $[ [<to-kast-paramlist> b] ]	
-   
-   
-   to-kast-paramlist:
-   		[hd | tl] -> $['_,_([<to-kast> hd],, 
-   						[<to-kast-paramlist> tl])]
-   						
-   to-kast-paramlist:
-   		[] -> $[.Params]
+   to-kast-tablist:
+   		[] -> $['.List`{""`}(.KList)]
    		
    		
    		
    to-kast:
-    	VarInitList(b) -> $[ [<to-kast-VarInitlist> b] ]	
+    	DimList(b) -> $[ [<to-kast-tablist> b] ]	
    
-   
-   to-kast-VarInitlist:
-   		[hd | tl] -> $['_,_([<to-kast> hd],, 
-   						[<to-kast-VarInitlist> tl])]
-   						
-   to-kast-VarInitlist:
-   		[] -> $[.VarInits]
    		
+   to-kast:
+    	CatchClauseList(b) -> $[ [<to-kast-tablist> b] ]	
+ 
+   		
+   to-kast:
+    	FormalParamList(b) -> $[ [<to-kast-commalist> b] ]	
+   		
+   		
+   to-kast:
+    	VarInitList(b) -> $[ [<to-kast-commalist> b] ]	
+
    		
 	to-kast:
-		a#(b) -> $[[<to-kast-userlist> (a,b)]]
+		a#(b) -> $[[<to-kast-dotuserlist> (a,b)]]
 		where (!a => "IdList")
 		
 	to-kast:
-		a#(b) -> $[[<to-kast-userlist> (a,b)]]
+		a#(b) -> $[[<to-kast-commauserlist> (a,b)]]
 		where (!a => "InterfaceTypeList")
 	
 	to-kast:
-		a#(b) -> $[[<to-kast-userlist> (a,b)]]
-		where (!a => "ExceptionList")
+		a#(b) -> $[[<to-kast-commauserlist> (a,b)]]
+		where (!a => "ExceptionTypeList")
 		
 	to-kast:
 		a#(b) -> $[[<to-kast-userlist> (a,b)]]
 		where (!a => "TypeDecList")
 		
 	to-kast:
-		a#(b) -> $[[<to-kast-userlist> (a,b)]]
+		a#(b) -> $[[<to-kast-commauserlist> (a,b)]]
 		where (!a => "VarDecList")
 		
 	to-kast:
@@ -188,15 +156,15 @@ rules
 		where (!a => "ImportDecList")
 		
 	to-kast:
-		a#(b) -> $[[<to-kast-userlist> (a,b)]]
+		a#(b) -> $[[<to-kast-commauserlist> (a,b)]]
 		where (!a => "ActualTypeArgList")
 		
 	to-kast:
-		a#(b) -> $[[<to-kast-userlist> (a,b)]]
+		a#(b) -> $[[<to-kast-anduserlist> (a,b)]]
 		where (!a => "ClassOrInterfaceTypeList")
 		
 	to-kast:
-		a#(b) -> $[[<to-kast-userlist> (a,b)]]
+		a#(b) -> $[[<to-kast-commauserlist> (a,b)]]
 		where (!a => "TypeParamList")
 		
 	to-kast:
@@ -248,15 +216,15 @@ rules
 		where (!a => "InterfaceMemberDecList") 
 		
 	to-kast:
-		a#(b) -> $[[<to-kast-userlist> (a,b)]]
+		a#(b) -> $[[<to-kast-commauserlist> (a,b)]]
 		where (!a => "ElemValPairList") 
 		
 	to-kast:
-		a#(b) -> $[[<to-kast-userlist> (a,b)]]
+		a#(b) -> $[[<to-kast-commauserlist> (a,b)]]
 		where (!a => "ElemValList") 
 		
 	to-kast:
-		a#(b) -> $[[<to-kast-userlist> (a,b)]]
+		a#(b) -> $[[<to-kast-commauserlist> (a,b)]]
 		where (!a => "EnumConstList") 	
 		
 	to-kast:
@@ -292,13 +260,36 @@ rules
 		where (!a => "CatchClauseList") 
 
 		
+	to-kast-commauserlist:
+		(a,[[hd | tl]]) -> $['[a]([<to-kast> hd],,
+		               		      [<to-kast-commauserlist> (a, [tl])])]
+		             
+	to-kast-commauserlist:
+		(a,[[]]) -> $['.List`{"`,"`}(.KList)]
+		
 	to-kast-userlist:
 		(a,[[hd | tl]]) -> $['[a]([<to-kast> hd],,
 		               		      [<to-kast-userlist> (a, [tl])])]
 		             
 	to-kast-userlist:
-		(a,[[]]) -> $[.[a]]
-		//where debug(!"to-kast-user-0: ")
+		(a,[[]]) -> $['.List`{""`}(.KList)]
+		
+	to-kast-dotuserlist:
+		(a,[[hd | tl]]) -> $['[a]([<to-kast> hd],,
+		               		      [<to-kast-dotuserlist> (a, [tl])])]
+		             
+	to-kast-dotuserlist:
+		(a,[[]]) -> $['.List`{"."`}(.KList)]
+		
+	to-kast-anduserlist:
+		(a,[[hd | tl]]) -> $['[a]([<to-kast> hd],,
+		               		      [<to-kast-anduserlist> (a, [tl])])]
+		             
+	to-kast-anduserlist:
+		(a,[[]]) -> $['.List`{"&"`}(.KList)]
+		
+	
+
 
 	to-kast:
 		a#(b) -> $['[a](
