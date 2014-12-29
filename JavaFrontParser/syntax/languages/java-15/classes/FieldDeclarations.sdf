@@ -28,7 +28,7 @@ exports
     VarDecId "=" VarInit -> VarDec {cons("VarDec")}
 
     Id      -> VarDecId
-    Id DimList -> VarDecId {cons("ArrayVarDecId")}
+    Id DimPlusList -> VarDecId {cons("ArrayVarDecId")}
 
     "[" "]" -> Dim {cons("Dim")}
 
